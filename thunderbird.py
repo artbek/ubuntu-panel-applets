@@ -3,11 +3,8 @@ import sys
 import gtk
 import appindicator
 
-import subprocess
-import re
 import gobject
 import sqlite3
-import json
 
 # http://developer.ubuntu.com/api/ubuntu-11.10/python/AppIndicator-0.1.html
 
@@ -15,9 +12,7 @@ sqlite_db = "/home/bart/.thunderbird/ug524fiy.default/global-messages-db.sqlite"
 
 class Thunderbird:
 	def __init__(self):
-		self.ind = appindicator.Indicator("new-mail-indicator",
-										   "",
-										   appindicator.CATEGORY_APPLICATION_STATUS)
+		self.ind = appindicator.Indicator("new-mail-indicator", "", appindicator.CATEGORY_APPLICATION_STATUS)
 		self.ind.set_status(appindicator.STATUS_ATTENTION)
 
 		self.ind.set_label("Getting data...")

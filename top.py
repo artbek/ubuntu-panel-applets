@@ -10,9 +10,7 @@ import gobject
 
 class Top:
 	def __init__(self):
-		self.ind = appindicator.Indicator("new-mail-indicator",
-										   "",
-										   appindicator.CATEGORY_APPLICATION_STATUS)
+		self.ind = appindicator.Indicator("new-mail-indicator", "", appindicator.CATEGORY_APPLICATION_STATUS)
 		self.ind.set_status(appindicator.STATUS_ACTIVE)
 
 		self.ind.set_label("Getting data...")
