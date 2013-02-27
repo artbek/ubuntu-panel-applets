@@ -8,12 +8,12 @@ import re
 import gobject
 
 
-class Top:
+class Irssi:
 	def __init__(self):
 		self.ind = appindicator.Indicator("new-mail-indicator", "", appindicator.CATEGORY_APPLICATION_STATUS)
 		self.ind.set_status(appindicator.STATUS_ACTIVE)
 
-		self.ind.set_label("Getting top data...")
+		self.ind.set_label("Getting irssi data...")
 		gobject.timeout_add(5000, self.update_label)
 
 		self.menu_setup()
@@ -31,17 +31,17 @@ class Top:
 
 
 	def get_data(self, line_number = 1):
-		command = "top -b | head -" + str(7 + line_number) + " | tail -1"
+		command = "tail -1 /home/bart/.irssi/log.txt"
 		r = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
 		data = r.communicate()[0]
-		data = re.sub(r' +', r' ', data.strip()).split(" ")
-		str_to_display = data[11] + " - [" + data[8] + "%]"
+		str_to_display = data.strip()
 
 		return str_to_display
 
 
 	def update_label(self):
-		str_to_display = self.get_data(1) + " .. " + self.get_data(2)
+		temp = self.get_data().split(":", 1) # splits on the first one only
+		str_to_display = "[" + temp[0] + "]: " + temp[1]
 
 		self.ind.set_label(str_to_display)
 		return True
@@ -52,4 +52,4 @@ class Top:
 
 
 if __name__ == "__main__":
-	indiCator = Top()
+	indiCator = Irssi()

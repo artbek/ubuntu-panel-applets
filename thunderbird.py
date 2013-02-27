@@ -15,7 +15,7 @@ class Thunderbird:
 		self.ind = appindicator.Indicator("new-mail-indicator", "", appindicator.CATEGORY_APPLICATION_STATUS)
 		self.ind.set_status(appindicator.STATUS_ATTENTION)
 
-		self.ind.set_label("Getting data...")
+		self.ind.set_label("Getting thunderbird data...")
 		gobject.timeout_add(5000, self.update_label)
 
 		self.menu_setup()
