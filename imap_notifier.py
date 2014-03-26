@@ -16,6 +16,7 @@ import time
 #     server = xxx
 #     port = 1
 #     mailboxes = INBOX,INBOX/spam
+#     log_file = /home/.../imap_notifier.log
 
 # To run, e.g.:
 # python imap.py <config_file_path> &
@@ -29,6 +30,7 @@ class Imap:
 		'server': 'xxx',
 		'port': 1,
 		'mailboxes': 'INBOX',
+		'log_file': '',
 	}
 
 
@@ -45,7 +47,11 @@ class Imap:
 
 		config_file.close()
 
-		self.ind = appindicator.Indicator("new-mail-indicator", "", appindicator.CATEGORY_APPLICATION_STATUS)
+		self.ind = appindicator.Indicator(
+			"new-mail-indicator",
+			"",
+			appindicator.CATEGORY_APPLICATION_STATUS
+		)
 		self.ind.set_status(appindicator.STATUS_ACTIVE)
 
 		self.ind.set_label("Getting outlook365 data...")
@@ -67,6 +73,13 @@ class Imap:
 		self.menu.append(self.quit_item)
 
 
+	def log(self, message):
+		if self.config['log_file']:
+			with open(self.config['log_file'], "a") as log_file:
+				log_file.write(message + '\n')
+				log_file.close()
+
+
 	def get_data(self):
 		messages_count = 0
 
@@ -80,13 +93,10 @@ class Imap:
 				conn.select(mailbox, readonly = 1)
 				(status, messages) = conn.search(None, '(UNSEEN)')
 
-				print(
-					time.strftime("%I:%M:%S %p") +
-					" (" + mailbox + "): " +
-					status +
-					" - " +
-					str(messages)
-				)
+				log_message = time.strftime("%d/%m/%Y %I:%M:%S %p")
+				log_message += " (" + mailbox + "): " + status + " - " + str(messages)
+
+				self.log(log_message)
 
 				if status == 'OK':
 					if len(messages[0]):
@@ -95,7 +105,8 @@ class Imap:
 			conn.close()
 
 		except:
-			sys.exit(sys.exc_info()[1])
+			self.log(str(sys.exc_info()))
+			pass
 
 		return messages_count
 
